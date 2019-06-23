@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="hint_size">12sp</dimen>
+    <dimen name="button_radius">14dp</dimen>
+    <dimen name="button_padding">10dp</dimen>
+    <dimen name="card_default_elevation">2dp</dimen>
 </resources>
