@@ -1,8 +1,8 @@
 package archit.fastsms.DatabseManager;
 
 public class Data {
-    private String Message = "Hey There!";
-    private String Phone = "9891192474";
+    private String Message = "";
+    private String Phone = "";
     private String type = "1";
 
     public Data(String message, String phone, String type) {

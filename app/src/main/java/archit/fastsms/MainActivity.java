@@ -1,7 +1,9 @@
 package archit.fastsms;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -82,12 +84,14 @@ public class MainActivity extends AppCompatActivity {
     public void saveData()
     {
         // Save data to database
-        Log.i("info", "Saving Data");
-        data = new Data(message.getText().toString(),phone.getText().toString(), "1" );
-        handler.save(data);
-        Log.i("here", "saved successfully");
-        fab.show();
-        title.setText(R.string.title_final);
+        if(validate()) {
+            Log.i("info", "Saving Data");
+            data = new Data(message.getText().toString(), phone.getText().toString(), "1");
+            handler.save(data);
+            Log.i("here", "saved successfully");
+            fab.show();
+            title.setText(R.string.title_final);
+        }
     }
 
     @Override
@@ -114,16 +118,34 @@ public class MainActivity extends AppCompatActivity {
     //####################################################################################################
     public void send()
     {
-        if(data.getType().equals("1")) {
-            sendSMSMessage();
+            if (data.getType().equals("1")) {
+                sendSMSMessage();
+//        } else {
+//            sendWhatsapp();
+            }
+    }
+
+    public boolean validate()
+    {
+        if(!phone.getText().toString().equals("")){
+            if(!(message.getText().toString().equals("") || message.getText().toString().equals("\n"))){
+                return true;
+            } else {
+                Toast.makeText(this, "message cannot be empty", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            sendWhatsapp();
+            Toast.makeText(this, "please enter Phone number first", Toast.LENGTH_SHORT).show();
         }
+        return false;
     }
 
     public void sendWhatsapp()
     {
-        //TODO send whatsapp message
+        //send whatsapp message
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        String url = "https://api.whatsapp.com/send?phone=91"+data.getPhone()+"&text="+data.getMessage()+"&source=&data=#";
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 
     protected void sendSMSMessage() {

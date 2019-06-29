@@ -1,7 +1,9 @@
 package archit.fastsms;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +41,6 @@ public class SendSMS extends AppCompatActivity {
                         MY_PERMISSIONS_REQUEST_SEND_SMS);
             }
         }
-
         getData();
         send();
     }
@@ -58,8 +59,8 @@ public class SendSMS extends AppCompatActivity {
             Log.i("info", "sending sms");
             sendSMSMessage();
             onBackPressed();
-        } else {
-            sendWhatsapp();
+//        } else {
+//            sendWhatsapp();
         }
     }
 
@@ -82,6 +83,10 @@ public class SendSMS extends AppCompatActivity {
 
     public void sendWhatsapp()
     {
-        //TODO code to send Whatsapp message
+        // send Whatsapp message
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        String url = "https://api.whatsapp.com/send?phone=91"+data.getPhone()+"&text="+data.getMessage()+"&source=&data=#";
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 }
