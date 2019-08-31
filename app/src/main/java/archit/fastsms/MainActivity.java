@@ -1,10 +1,13 @@
 package archit.fastsms;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,8 +41,14 @@ public class MainActivity extends AppCompatActivity {
     Switch type;
     TextView title;
     String typeVal = "0";
+    ImageButton browseContact;
+
+    // TODO add new user status
 
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACT = 0;
+
+    static final int PICK_CONTACT=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // check for permission to send SMS
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -58,13 +69,17 @@ public class MainActivity extends AppCompatActivity {
                         MY_PERMISSIONS_REQUEST_SEND_SMS);
             }
         }
+        //###################################
 
         save = findViewById(R.id.save);
         phone = findViewById(R.id.enter_phone);
         message = findViewById(R.id.enter_text);
         type = findViewById(R.id.switch1);
         title = findViewById(R.id.title);
+        browseContact = findViewById(R.id.browse_contacts);
         handler = new DBHandler(this, null, null, 1);
+
+        showTutorial();
 
         getData();
         setData();
@@ -73,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveData();
+            }
+        });
+        browseContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickContact();
             }
         });
 
@@ -97,6 +118,31 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    public void showTutorial()
+    {
+        //TODO Show tutorial
+    }
+
+    public void pickContact()
+    {
+        // Check for permission to read contacts
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACT);
+            }
+        }
+        //######################################
+
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(intent, PICK_CONTACT);
     }
 
     public void saveData()
@@ -126,6 +172,34 @@ public class MainActivity extends AppCompatActivity {
         message.setText(data.getMessage());
     }
 
+    //####################################################################################################
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent daata) {
+        super.onActivityResult(reqCode, resultCode, daata);
+
+        if(reqCode == PICK_CONTACT) {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri contactData = daata.getData();
+                Cursor c =  managedQuery(contactData, null, null, null, null);
+                if (c.moveToFirst()) {
+                    String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                    String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                    if (hasPhone.equalsIgnoreCase("1")) {
+                        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
+                        phones.moveToFirst();
+                        data.setPhone(phones.getString(phones.getColumnIndex("data1")));
+                        setData();
+                        phones.close();
+                    }
+//                  String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                }
+            }
+        }
+    }
+
+    //####################################################################################################
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -140,9 +214,12 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id)
+        {
+            case R.id.action_settings : //show settings
+                return true;
+            case R.id.action_info : //show info fragment
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

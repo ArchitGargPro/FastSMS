@@ -4,6 +4,7 @@ public class Data {
     private String Message = "";
     private String Phone = "";
     private String type = "1";
+    // TODO add new user status
 
     public Data(String message, String phone, String type) {
         Message = message;

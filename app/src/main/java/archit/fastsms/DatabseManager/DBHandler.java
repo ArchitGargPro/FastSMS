@@ -14,6 +14,8 @@ public class DBHandler extends SQLiteOpenHelper {
     SQLiteDatabase database;
     Cursor c;
 
+    // TODO add new user status
+
     private static final int DATABASE_Version = 1;
     private static final String DATABASE_NAME = "data.db";
     public static final String TABLE = "DATA";
