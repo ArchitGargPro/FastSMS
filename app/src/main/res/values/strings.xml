@@ -4,7 +4,7 @@
     <string name="title_initial"> (Save details of your Fast SMS)</string>
     <string name="title_final"> (Your Fast SMS is Ready)</string>
     <string name="action_settings">Settings</string>
-    <string name="heading">Welcome, \nThis app will help you to send the sms you provide to the contact you enter by one tap</string>
+    <string name="heading">Welcome, \nThis app will help you to send the sms you provide to the contact you enter by "one tap" with a flash</string>
     <string name="enter_number">Enter the phone number or browse contacts</string>
     <string name="enter_number_hint">+91 9182572845</string>
     <string name="enter_text_hint">--- Enter the message here ---\n Mom, I\'ve reached</string>
@@ -14,7 +14,7 @@
     <string name="op1">WhatsApp</string>
     <string name="op2">SMS (charges apply)</string>
     <string name="snack">Check for this icon in your apps to send Fast SMS</string>
-    <string name="sent">SMS Sent</string>
+    <string name="sent">SMS Sent\n\n\nThanks for Using this app</string>
     <string name="credit1">Dedicated to all the mothers out there :)</string>
-    <string name="credit2">--> WhatsApp will be activated soon</string>
+    <string name="credit2">--> Spread the tech if you like</string>
 </resources>

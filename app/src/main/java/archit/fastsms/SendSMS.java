@@ -35,7 +35,9 @@ public class SendSMS extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.SEND_SMS)) {
+                Log.i("Permission Status", "Permission granted");
             } else {
+                Log.i("Permission Status", "Requesting Permission");
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.SEND_SMS},
                         MY_PERMISSIONS_REQUEST_SEND_SMS);
@@ -47,9 +49,9 @@ public class SendSMS extends AppCompatActivity {
 
     public void getData()
     {
-        //TODO get data from the database
+        // get data from the database
 
-        Log.i("info", "Getting froom db");
+        Log.i("info", "Getting from db");
         data = dbHandler.load();
     }
 
@@ -59,8 +61,8 @@ public class SendSMS extends AppCompatActivity {
             Log.i("info", "sending sms");
             sendSMSMessage();
             onBackPressed();
-//        } else {
-//            sendWhatsapp();
+        } else {
+            sendWhatsapp();
         }
     }
 

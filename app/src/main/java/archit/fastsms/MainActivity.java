@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     Switch type;
     TextView title;
+    String typeVal = "0";
+
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
 
     @Override
@@ -62,10 +66,24 @@ public class MainActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         handler = new DBHandler(this, null, null, 1);
 
+        getData();
+        setData();
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveData();
+            }
+        });
+
+        type.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    typeVal = "1";  // SMS
+                } else {
+                    typeVal = "0";  // whatsapp
+                }
             }
         });
 
@@ -86,12 +104,26 @@ public class MainActivity extends AppCompatActivity {
         // Save data to database
         if(validate()) {
             Log.i("info", "Saving Data");
-            data = new Data(message.getText().toString(), phone.getText().toString(), "1");
+            data = new Data(message.getText().toString(), phone.getText().toString(), typeVal);
             handler.save(data);
             Log.i("here", "saved successfully");
             fab.show();
             title.setText(R.string.title_final);
         }
+    }
+
+    public void getData()
+    {
+        // get data from the database
+        Log.i("info", "Getting from db");
+        data = handler.load();
+    }
+
+    public void setData()
+    {
+        //setting the text edit texts
+        phone.setText(data.getPhone());
+        message.setText(data.getMessage());
     }
 
     @Override
@@ -118,11 +150,12 @@ public class MainActivity extends AppCompatActivity {
     //####################################################################################################
     public void send()
     {
-            if (data.getType().equals("1")) {
-                sendSMSMessage();
-//        } else {
-//            sendWhatsapp();
-            }
+        if (data.getType().equals("1")) {
+            sendSMSMessage();
+            onBackPressed();
+        } else {
+            sendWhatsapp();
+        }
     }
 
     public boolean validate()
@@ -134,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "message cannot be empty", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "please enter Phone number first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "please enter Phone number", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
