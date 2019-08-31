@@ -4,7 +4,7 @@
     <string name="title_initial"> (Save details of your Fast SMS)</string>
     <string name="title_final"> (Your Fast SMS is Ready)</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Learn how to Use</string>
     <string name="action_info">Info.</string>
 
     <string name="heading">Welcome, \nThis app will help you to send the sms you provide to the contact you enter by "one tap" with a flash</string>
@@ -23,4 +23,8 @@
 
     <string name="credit1">Dedicated to all the mothers out there :)</string>
     <string name="credit2">--> Spread the tech if you like</string>
+
+    <string name="skip">SKIP</string>
+    <string name="next">NEXT</string>
+    <string name="no_again">Don\'t show again</string>
 </resources>

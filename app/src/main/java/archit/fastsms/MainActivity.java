@@ -2,16 +2,22 @@ package archit.fastsms;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
@@ -19,17 +25,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import archit.fastsms.DatabseManager.DBHandler;
 import archit.fastsms.DatabseManager.Data;
+import archit.fastsms.menuFragments.TutorialFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     TextView title;
     String typeVal = "0";
     ImageButton browseContact;
+    Fragment menuItem;
+    ViewPager viewPager;
 
     // TODO add new user status
 
@@ -79,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         browseContact = findViewById(R.id.browse_contacts);
         handler = new DBHandler(this, null, null, 1);
 
-        showTutorial();
+//        showTutorial();
 
         getData();
         setData();
@@ -113,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                saveData();
                 send();
                 Snackbar.make(view, R.string.snack, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -120,9 +131,53 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public class ImageAdapter extends PagerAdapter {
+
+        Context mContext;
+
+        ImageAdapter(Context context) {
+            this.mContext = context;
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
+            return view == o;
+        }
+
+        private int[] sliderImageId = new int[]{
+                // TODO add image resources
+                R.drawable.img1, R.drawable.img2, R.drawable.img3,R.drawable.img4, R.drawable.img5, R.drawable.img6
+        };
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            ImageView imageView = new ImageView(mContext);
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setImageResource(sliderImageId[position]);
+            container.addView(imageView, 0);
+            return imageView;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((ImageView) object);
+        }
+
+        @Override
+        public int getCount() {
+            return sliderImageId.length;
+        }
+    }
+
     public void showTutorial()
     {
         //TODO Show tutorial
+        menuItem = new TutorialFragment();
+
+        viewPager = findViewById(R.id.viewPager);
+        ImageAdapter imageAdapter = new ImageAdapter(this);
+        viewPager.setAdapter(imageAdapter);
     }
 
     public void pickContact()
